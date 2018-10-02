@@ -1,0 +1,7 @@
+C:\Users\Gercules\Documents\Visual Studio 2017\Projects\CA_BugTracker\CA_BugTracker\bin\Debug\CA_BugTracker.exe.config
+C:\Users\Gercules\Documents\Visual Studio 2017\Projects\CA_BugTracker\CA_BugTracker\bin\Debug\CA_BugTracker.exe
+C:\Users\Gercules\Documents\Visual Studio 2017\Projects\CA_BugTracker\CA_BugTracker\bin\Debug\CA_BugTracker.pdb
+C:\Users\Gercules\Documents\Visual Studio 2017\Projects\CA_BugTracker\CA_BugTracker\obj\Debug\CA_BugTracker.csprojAssemblyReference.cache
+C:\Users\Gercules\Documents\Visual Studio 2017\Projects\CA_BugTracker\CA_BugTracker\obj\Debug\CA_BugTracker.csproj.CoreCompileInputs.cache
+C:\Users\Gercules\Documents\Visual Studio 2017\Projects\CA_BugTracker\CA_BugTracker\obj\Debug\CA_BugTracker.exe
+C:\Users\Gercules\Documents\Visual Studio 2017\Projects\CA_BugTracker\CA_BugTracker\obj\Debug\CA_BugTracker.pdb

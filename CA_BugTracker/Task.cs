@@ -27,8 +27,92 @@ namespace CA_BugTracker
         public Task()
         {
             Id = ++_id;
+            
+
+        }
+        public static Task CreateTask(List<User> users, List<Project> projects)
+        {
+            Console.WriteLine("Введите название задачи :");
+            string theme = Console.ReadLine();
+            Console.WriteLine("Введите тип задачи");
+            string type = Console.ReadLine();
+            Console.WriteLine("Введите приоритет задачи");
+            string priority = Console.ReadLine();
+            Console.WriteLine("Введите описание задачи");
+            string description = Console.ReadLine();
+
+            Console.WriteLine("Введите имя или фамилию исполнителя");
+            string user = Console.ReadLine();
+
+            Console.WriteLine("Введите название проекта");
+            string project = Console.ReadLine();
+
+            Task newtask = new Task
+            {
+                Theme = theme,
+                Type = type,
+                Priority = priority,
+                Description = description,
+                User = users.Find(u => u.LastName == user || u.FirstName == user),
+                Project = projects.Find(p => p.ProjectName == project)
+
+            };
+
+            return newtask;
+        }
+        public static void DeleteTask(List<Task> tasks)
+        {
+            ShowTasks(tasks);
+            Console.WriteLine("Введите ID задачи , которую следует удалить");
+            int removeTask = Convert.ToInt32(Console.ReadLine());
+            tasks.Remove(tasks.Find(f => f.Id == removeTask));
+
+        }
+        public static void ShowTasks(List<Task> tasks)
+        {
+            Console.Clear();
+            foreach (var item in tasks)
+            {
+                Console.WriteLine(item.Id + " Nazvanie:" + item.Theme + "  UserName:"
+                    + item.User.LastName + " ProjectName:" + item.Project.ProjectName
+                    + " Type:" + item.Type + " Description:" + item.Description);
+            }
+            Console.WriteLine("йцуй");
+        }
+        public static void ShowTasksInProject(List<Task> tasks, List<Project> projects)
+        {
+            Console.Clear();
+            Project.ShowProjects(projects);
+            Console.WriteLine("Введите название проекта,для которого необходимо отобразить задачи");
+            string projectName = Console.ReadLine();
+            var selected = from t in tasks
+                         where t.Project.ProjectName == projectName
+                         select t;
+            Console.WriteLine("Задачи в проекте :{0}",projectName);
+            foreach(var item in selected)
+            {
+                Console.WriteLine(item.Theme);
+            }
+
+        }
+        public static void ShowTaskForUser(List<Task> tasks,List<User> users)
+        {
+            Console.Clear();
+            User.ShowUsers(users);
+            Console.WriteLine("Введите Фамилию исполнителя");
+            string userName = Console.ReadLine();
+            var select = from t in tasks
+                         where t.User.LastName == userName
+                         select t;
+            Console.WriteLine("Задачи назначенные исполнителю :{0}", userName);
+            foreach (var item in select)
+            {
+                Console.WriteLine("Название : "+item.Theme);
+            }
 
         }
 
     }
+
+
 }

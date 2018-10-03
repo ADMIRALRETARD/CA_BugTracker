@@ -17,13 +17,13 @@ namespace CA_BugTracker
             {
                 new Project
                 {
-                  ProjectName="Проект1"
+                  ProjectName="Один"
                 },
                 new Project{
-                  ProjectName="Проект2"
+                  ProjectName="ПроектДва"
                 },
                 new Project{
-                  ProjectName="Проект3"
+                  ProjectName="НомерТри"
                 },
             };
 
@@ -50,74 +50,85 @@ namespace CA_BugTracker
             {
                 new Task
                 {
-                    Theme ="Название1",
+                    Theme ="ЭтоНазвание",
                     Type="Тип1",
                     Priority="Высокий",
                     Description="Описание1",
                     User=users[0],
-                    Project=projects[0]
+                    Project=projects[0],
+                    ProjectName =projects[0].ProjectName
                 },
                 new Task
                 {
-                    Theme="Название2",
+                    Theme="ВтороеНазвание",
                     Type="Тип2",
                     Priority="Средний",
                     Description="Описание2",
                     User=users[1],
-                    Project=projects[1]
+                    Project=projects[1],
+                    ProjectName =projects[2].ProjectName
+                   // UserName=users[1].LastName
                 },
                 new Task
                 {
-                    Theme="Название3",
+                    Theme="ЕщеНазвание",
                     Type="Тип3",
                     Priority="Низкий",
                     Description="Описание",
                     User=users[2],
-                    Project=projects[2]
+                    Project=projects[2],
+                    ProjectName =projects[2].ProjectName
                 }
             };
             #endregion
             Console.WriteLine("Для навигации введите на клавиатуре соответствующую цифру.\nНажмите любую клавишу для продолжения");
             Console.ReadLine();
+
+            Menu();
+
             int command;
-            
-                Menu();
-                while (command != 4)
+            while (true)
+            {
+                switch (command)
                 {
 
-                    switch (command)
-                    {
+                    case 1:
+                        Task.ShowTasks(tasks);
+                        command = Convert.ToInt32(Console.ReadLine());
+                        break;
+                    case 2:
+                        Options();
+                        Menu();
+                        break;
+                    case 3:
+                        ShowMore();
+                        break;
+                    case 4:
 
-                        case 1:
-                            ShowTasks();
-                            command = Convert.ToInt32(Console.ReadLine());
-                            break;
-                        case 2:
-                            Options();
-                            Menu();
-                            break;
-                        case 4:
-                            Environment.Exit(0);
-                            break;
-                    }
+                        break;
+                    case 5:
+
+                        Environment.Exit(0);
+                        break;
                 }
-
-            
-           
+            }
 
 
-            // Console.ReadLine();
+
+
+
+
             void Menu()
             {
                 Console.Clear();
 
-                Console.WriteLine("1.Показать задачи\n2.Опции\n3.Запросы\n4.Выход");
+                Console.WriteLine("1.Показать задачи\n2.Опции\n3.Показать дополнительную информацию\n4.Сохранить на жесткий диск\n5.Выход");
                 try
                 {
-                command = Convert.ToInt32(Console.ReadLine());
+                    command = Convert.ToInt32(Console.ReadLine());
                 }
 
-                 catch (FormatException)
+                catch (FormatException)
                 {
                     Console.WriteLine("Введите значение");
                     command = Convert.ToInt32(Console.ReadLine());
@@ -127,145 +138,73 @@ namespace CA_BugTracker
             }
             void Options()
             {
+                int optioncommand;
+                Console.Clear();
                 Console.WriteLine("1.Добавить задачу\n2.Добавить проект\n3.Добавить пользователя\n4.Удалить задачу" +
                     "\n5.Удалить проект\n6.Удалить пользователя");
-                command = Convert.ToInt32(Console.ReadLine());
-                switch (command)
+                optioncommand = Convert.ToInt32(Console.ReadLine());
+                switch (optioncommand)
                 {
                     case 1:
-                        AddNewTask();
+                        tasks.Add(Task.CreateTask(users, projects));
+                        Console.WriteLine("Задача добавлена");
                         break;
                     case 2:
-                        AddNewProject();
+                        projects.Add(Project.CreateProject());
+                        Console.WriteLine("Проект добавлен");
                         break;
                     case 3:
-                        AddNewUser();
+                        users.Add(User.CreateUser());
+                        Console.WriteLine("Пользователь добавлен");
                         break;
                     case 4:
-                        DeleteTask();
+                        Task.DeleteTask(tasks);
                         break;
                     case 5:
-                        DeleteProject();
+                        Project.DeleteProject(projects);
                         break;
                     case 6:
-                        DeleteUser();
+                        User.DeleteUser(users);
                         break;
                 }
             }
-            #region Delete
-            void DeleteProject()
-            {
-                ShowProjects();
-                Console.WriteLine("Введите название проекта или ID, который следует удалить");
-                string removeproject = Console.ReadLine();
-                projects.Remove(projects.Find(r => r.ProjectName == removeproject || r.Id == Convert.ToInt32(removeproject)));
-            }
-            void DeleteUser()
-            {
-                ShowUsers();
-                Console.WriteLine("Введите Имя,Фамилию или ID пользователя, которого следует удалить");
-                string removeUser = Console.ReadLine();
-                users.Remove(users.Find(u => u.LastName == removeUser || u.FirstName == removeUser || u.Id == Convert.ToInt32(removeUser)));
-            }
-            void DeleteTask()
-            {
-                ShowTasks();
-                Console.WriteLine("Введите Название или ID задачи , которую следует удалить");
-                string removeTask = Console.ReadLine();
-                tasks.Remove(tasks.Find(f => f.Theme == removeTask || f.Id == Convert.ToInt32(removeTask)));
-
-            }
-
-            #endregion
-            #region Show
-            void ShowTasks()
+            void ShowMore()
             {
                 Console.Clear();
-                foreach (var item in tasks)
+                Console.WriteLine("1.Показать все проекты\n2.Показать всех пользователй" +
+                                "\n3.Показать список задач в проекте" +
+                                "\n4.Показать список задач,назначенных на конкретного исполнителя");
+                int showcommand;
+                showcommand = Convert.ToInt32(Console.ReadLine());
+                switch (showcommand)
                 {
-                    Console.WriteLine(item.Id + " Nazvanie:" + item.Theme + "  UserName:"
-                        + item.User.LastName + " ProjectName:" + item.Project.ProjectName
-                        + " Type:" + item.Type + " Description:" + item.Description);
+                    case 1:
+                        Project.ShowProjects(projects);
+                        showcommand = Convert.ToInt32(Console.ReadLine());
+                        break;
+                    case 2:
+                        User.ShowUsers(users);
+                        showcommand = Convert.ToInt32(Console.ReadLine());
+                        break;
+                    case 3:
+                        Task.ShowTasksInProject(tasks, projects);
+                        showcommand = Convert.ToInt32(Console.ReadLine());
+                        break;
+                    case 4:
+                        Task.ShowTaskForUser(tasks, users);
+                        showcommand = Convert.ToInt32(Console.ReadLine());
+                        break;
+                   
+
                 }
-            }
-            void ShowUsers()
-            {
-                Console.Clear();
-                foreach (var item in users)
-                {
-                    Console.WriteLine(item.Id + " :" + item.FirstName + "  :" + item.LastName);
-                }
-            }
-            void ShowProjects()
-            {
-                Console.Clear();
-                foreach (var item in projects)
-                {
-                    Console.WriteLine(item.Id + " :" + item.ProjectName);
-                }
-            }
-            #endregion
-            #region Add
-
-            void AddNewTask()
-            {
-                Console.WriteLine("Введите название задачи :");
-                string theme = Console.ReadLine();
-                Console.WriteLine("Введите тип задачи");
-                string type = Console.ReadLine();
-                Console.WriteLine("Введите приоритет задачи");
-                string priority = Console.ReadLine();
-                Console.WriteLine("Введите описание задачи");
-                string description = Console.ReadLine();
-
-                Console.WriteLine("Введите имя или фамилию исполнителя");
-                string user = Console.ReadLine();
-
-                Console.WriteLine("Введите название проекта");
-                string project = Console.ReadLine();
-
-
-                Task newTask = new Task
-                {
-
-                    Theme = theme,
-                    Type = type,
-                    Priority = priority,
-                    Description = description,
-                    User = users.Find(u => u.LastName == user || u.FirstName == user),
-                    Project = projects.Find(p => p.ProjectName == project)
-                };
-                tasks.Add(newTask);
-                Console.WriteLine("Задача добавлена");
 
             }
-            void AddNewProject()
-            {
-                Console.WriteLine("Введите название проекта");
-                string projectName = Console.ReadLine().ToString();
-                Project newproject = new Project
-                {
-                    ProjectName = projectName
-                };
-                projects.Add(newproject);
-                Console.WriteLine("Проект добавлен");
-            }
-            void AddNewUser()
-            {
-                Console.WriteLine("Введите имя пользователя");
-                string firstName = Console.ReadLine().ToString();
-                Console.WriteLine("Введите фамилию пользователя");
-                string lastName = Console.ReadLine().ToString();
-                User newUser = new User
-                {
-                    FirstName = firstName,
-                    LastName = lastName
-                };
-                users.Add(newUser);
-                Console.WriteLine("Пользователь добавлен");
-            }
+
+
+
+
+
         }
-        #endregion
 
 
     }

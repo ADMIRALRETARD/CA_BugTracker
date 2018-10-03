@@ -53,7 +53,7 @@ namespace CA_BugTracker
             string project = Console.ReadLine();
             while (!projects.Contains(projects.Find(p => p.ProjectName == project)))
             {
-                Console.WriteLine("Нельзя добавить несуществующего пользователя");
+                Console.WriteLine("Нельзя добавить несуществующий проект");
                 Project.ShowProjects(projects);
                 project = Console.ReadLine();
             }

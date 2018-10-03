@@ -252,7 +252,7 @@ namespace CA_BugTracker
                         sw.WriteLine("{0:d3}\t{1:16}\t{2,6}",item.Id ,item.FirstName, item.LastName);
                     }
                 }
-                Console.WriteLine("Файлы записаны в каталог программы");
+                Console.WriteLine("Файлы записаны в каталог программы\\Debug");
             }
 
 

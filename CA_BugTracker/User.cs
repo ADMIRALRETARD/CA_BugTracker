@@ -37,18 +37,41 @@ namespace CA_BugTracker
         public static void ShowUsers(List<User> users)
         {
             Console.Clear();
+            Console.WriteLine("ID\tИмя\tФамилия");
             foreach (var item in users)
             {
-                Console.WriteLine(item.Id + " :" + item.FirstName + "  :" + item.LastName);
+                Console.WriteLine("{0:d3}\t{1:16}\t{2,6}",item.Id ,item.FirstName, item.LastName);
             }
 
         }
-        public static void DeleteUser(List<User> users)
+        public static void DeleteUser(List<User> users, List<Task> tasks)
         {
             ShowUsers(users);
-            Console.WriteLine("Введите Имя,Фамилию или ID пользователя, которого следует удалить");
-            string removeUser = Console.ReadLine();
-            users.Remove(users.Find(u => u.LastName == removeUser || u.FirstName == removeUser || u.Id == Convert.ToInt32(removeUser)));
+            Console.WriteLine("Введите ID пользователя, которого следует удалить");
+            try
+            {
+
+                string removeUser = Console.ReadLine();
+                while (tasks.Contains(tasks.Find(p => p.User.Id == Convert.ToInt32(removeUser))))
+                {
+                    Console.WriteLine("Сначала удалите задачи , связанные с этим проектом");
+                    Console.ReadLine();
+                    return;
+                }
+                if (!users.Contains(users.Find(u => u.Id == Convert.ToInt32(removeUser))))
+                {
+                    Console.WriteLine("Такого пользователя не существует");
+                    Console.ReadLine();
+                    return;
+                }
+                users.Remove(users.Find(u => u.Id == Convert.ToInt32(removeUser)));
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Ошибка ввода данных .");
+                Console.ReadLine();
+                return;
+            }
         }
     }
 }

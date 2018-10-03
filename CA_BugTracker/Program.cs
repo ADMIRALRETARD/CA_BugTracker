@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace CA_BugTracker
 {
@@ -81,34 +82,39 @@ namespace CA_BugTracker
                 }
             };
             #endregion
-            Console.WriteLine("Для навигации введите на клавиатуре соответствующую цифру.\nНажмите любую клавишу для продолжения");
+            Console.WriteLine("Для навигации введите на клавиатуре соответствующую цифру.\nНажмите любую клавишу для продолжения...");
             Console.ReadLine();
 
+            string command;
             Menu();
 
-            int command;
             while (true)
             {
                 switch (command)
                 {
 
-                    case 1:
+                    case "1":
                         Task.ShowTasks(tasks);
-                        command = Convert.ToInt32(Console.ReadLine());
+                        Console.WriteLine("Нажмите любую клавишу для продолжения...");
+                        command =Console.ReadLine();
                         break;
-                    case 2:
+                    case "2":
                         Options();
                         Menu();
                         break;
-                    case 3:
+                    case "3":
                         ShowMore();
                         break;
-                    case 4:
-
+                    case "4":
+                        Savefile();
+                        command = Console.ReadLine();
                         break;
-                    case 5:
-
+                    case "5":
                         Environment.Exit(0);
+                        break;
+                    default:
+                        
+                        Menu();
                         break;
                 }
             }
@@ -123,48 +129,58 @@ namespace CA_BugTracker
                 Console.Clear();
 
                 Console.WriteLine("1.Показать задачи\n2.Опции\n3.Показать дополнительную информацию\n4.Сохранить на жесткий диск\n5.Выход");
-                try
+                
+                command = Console.ReadLine();
+                if (command == "")
                 {
-                    command = Convert.ToInt32(Console.ReadLine());
+                    command = Console.ReadLine();
                 }
-
-                catch (FormatException)
-                {
-                    Console.WriteLine("Введите значение");
-                    command = Convert.ToInt32(Console.ReadLine());
-                }
-
-
             }
             void Options()
             {
-                int optioncommand;
+                string optioncommand;
                 Console.Clear();
                 Console.WriteLine("1.Добавить задачу\n2.Добавить проект\n3.Добавить пользователя\n4.Удалить задачу" +
-                    "\n5.Удалить проект\n6.Удалить пользователя");
-                optioncommand = Convert.ToInt32(Console.ReadLine());
+                    "\n5.Удалить проект\n6.Удалить пользователя" +
+                    "\n7.Главное меню");
+                optioncommand = Console.ReadLine();
+                if (optioncommand == "")
+                {
+                    optioncommand = Console.ReadLine();
+                }
                 switch (optioncommand)
                 {
-                    case 1:
+                    case "1":
                         tasks.Add(Task.CreateTask(users, projects));
                         Console.WriteLine("Задача добавлена");
+                        Console.ReadLine();
                         break;
-                    case 2:
+                    case "2":
                         projects.Add(Project.CreateProject());
                         Console.WriteLine("Проект добавлен");
+                        Console.ReadLine();
                         break;
-                    case 3:
+                    case "3":
                         users.Add(User.CreateUser());
                         Console.WriteLine("Пользователь добавлен");
+                        Console.ReadLine();
                         break;
-                    case 4:
+                    case "4":
                         Task.DeleteTask(tasks);
                         break;
-                    case 5:
-                        Project.DeleteProject(projects);
+                    case "5":
+                        Project.DeleteProject(projects,tasks);
                         break;
-                    case 6:
-                        User.DeleteUser(users);
+                    case "6":
+                        User.DeleteUser(users,tasks);
+                        break;
+                    case "7":
+                        Menu();
+                        break;
+                    default:
+                        Console.WriteLine("Вы не ввели число");
+                        Options();
+                        optioncommand = Console.ReadLine();
                         break;
                 }
             }
@@ -173,31 +189,70 @@ namespace CA_BugTracker
                 Console.Clear();
                 Console.WriteLine("1.Показать все проекты\n2.Показать всех пользователй" +
                                 "\n3.Показать список задач в проекте" +
-                                "\n4.Показать список задач,назначенных на конкретного исполнителя");
-                int showcommand;
-                showcommand = Convert.ToInt32(Console.ReadLine());
+                                "\n4.Показать список задач,назначенных на конкретного исполнителя" +
+                                "\n5.Главное меню");
+                string showcommand;
+                showcommand = Console.ReadLine();
                 switch (showcommand)
                 {
-                    case 1:
+                    case "1":
                         Project.ShowProjects(projects);
-                        showcommand = Convert.ToInt32(Console.ReadLine());
+                        showcommand = Console.ReadLine();
                         break;
-                    case 2:
+                    case "2":
                         User.ShowUsers(users);
-                        showcommand = Convert.ToInt32(Console.ReadLine());
+                        showcommand = Console.ReadLine();
                         break;
-                    case 3:
+                    case "3":
                         Task.ShowTasksInProject(tasks, projects);
-                        showcommand = Convert.ToInt32(Console.ReadLine());
+                        showcommand = Console.ReadLine();
                         break;
-                    case 4:
+                    case "4":
                         Task.ShowTaskForUser(tasks, users);
-                        showcommand = Convert.ToInt32(Console.ReadLine());
+                        showcommand = Console.ReadLine();
+                        break;
+                    case "5":
+                        Menu();
+                        break;
+                    default:
+                        Menu();
                         break;
                    
 
                 }
 
+            }
+            void Savefile()
+            {
+               
+                string pathtasks = Environment.CurrentDirectory.ToString() +"\\tasks.txt";
+                string pathprojects = Environment.CurrentDirectory.ToString() + "\\projects.txt";
+                string pathusers = Environment.CurrentDirectory.ToString() + "\\users.txt";
+                using (StreamWriter sw=new StreamWriter(pathtasks))
+                {
+                    sw.WriteLine("ID \tНазвание\tИсполнитель\tПроект   \tТип\tПриоритет\tОписание");
+                    foreach (var item in tasks)
+                    {
+                        sw.WriteLine("{0:d3}\t{1:16}\t{2,-16}{3,-10}{4,10}\t{5,-10}\t{6 ,-5}", item.Id, item.Theme, item.User.LastName
+                                 , item.Project.ProjectName, item.Type, item.Priority, item.Description);
+                    }
+                }
+                using (StreamWriter sw = new StreamWriter(pathprojects))
+                {
+                    sw.WriteLine("ID\tНазвание");
+                    foreach (var item in projects)
+                    {
+                        sw.WriteLine("{0:d3}\t{1:15}", item.Id, item.ProjectName);
+                    }
+                }
+                using (StreamWriter sw = new StreamWriter(pathusers))
+                {   sw.WriteLine("ID\tИмя\tФамилия");
+                    foreach (var item in users)
+                    {
+                        sw.WriteLine("{0:d3}\t{1:16}\t{2,6}",item.Id ,item.FirstName, item.LastName);
+                    }
+                }
+                Console.WriteLine("Файлы записаны в каталог программы");
             }
 
 

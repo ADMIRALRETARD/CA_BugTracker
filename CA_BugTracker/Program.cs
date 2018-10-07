@@ -224,10 +224,10 @@ namespace CA_BugTracker
             }
             void Savefile()
             {
-               
-                string pathtasks = Environment.CurrentDirectory.ToString() +"\\tasks.txt";
-                string pathprojects = Environment.CurrentDirectory.ToString() + "\\projects.txt";
-                string pathusers = Environment.CurrentDirectory.ToString() + "\\users.txt";
+                
+                string pathtasks = Path.Combine(Environment.CurrentDirectory, "tasks.txt"); ;
+                string pathprojects = Path.Combine(Environment.CurrentDirectory, "projects.txt");
+                string pathusers = Path.Combine(Environment.CurrentDirectory, "users.txt"); 
                 using (StreamWriter sw=new StreamWriter(pathtasks))
                 {
                     sw.WriteLine("ID \tНазвание\tИсполнитель\tПроект   \tТип\tПриоритет\tОписание");

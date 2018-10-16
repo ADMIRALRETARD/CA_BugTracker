@@ -9,79 +9,13 @@ namespace CA_BugTracker
 {
     public class Controller
     {
-        List<Task> tasks;
-        List<User> users;
-        List<Project> projects;
         
+        Repository repository;
         public Controller()
         {
-            projects = new List<Project>
-            {
-                new Project
-                {
-                  ProjectName="Один"
-                },
-                new Project{
-                  ProjectName="ПроектДва"
-                },
-                new Project{
-                  ProjectName="НомерТри"
-                },
-            };
-            
-            users = new List<User>
-            {
-                new User
-                {
-                    FirstName="Евгений",
-                    LastName="Замятин"
-                },
-                new User
-                {
-                    FirstName="Эмили",
-                    LastName="Бронте"
-                },
-                new User
-                {
-                    FirstName="Линус",
-                    LastName="Торвальдс"
-                }
-            };
-            tasks = new List<Task>
-            {
-                new Task
-                {
-                    Theme ="ЭтоНазвание",
-                    Type="Тип1",
-                    Priority="Высокий",
-                    Description="Описание1",
-                    User=users[0],
-                    Project=projects[0],
-                },
-                new Task
-                {
-                    Theme="ВтороеНазвание",
-                    Type="Тип2",
-                    Priority="Средний",
-                    Description="Описание2",
-                    User=users[1],
-                    Project=projects[1],
-
-                },
-                new Task
-                {
-                    Theme="ЕщеНазвание",
-                    Type="Тип3",
-                    Priority="Низкий",
-                    Description="Описание",
-                    User=users[2],
-                    Project=projects[2],
-                }
-            };
-
-
+            repository = new Repository();
         }
-        
+
         #region Create
 
         Task CreateTask()
@@ -97,29 +31,20 @@ namespace CA_BugTracker
 
             Console.WriteLine("Введите имя или фамилию исполнителя");
             string user = Console.ReadLine();
-            while (!users.Contains(users.Find(u => u.FirstName == user || u.LastName == user)))
-            {
-                Console.WriteLine("Нельзя добавить несуществующего пользователя");
-                ShowUsers();
-
-                user = Console.ReadLine();
-            }
+            user = repository.IsContainUser(user);
+            
             Console.WriteLine("Введите название проекта");
             string project = Console.ReadLine();
-            while (!projects.Contains(projects.Find(p => p.ProjectName == project)))
-            {
-                Console.WriteLine("Нельзя добавить несуществующий проект");
-                ShowProjects();
-                project = Console.ReadLine();
-            }
+            project= repository.IsContainProject(project);
+
             Task newtask = new Task
             {
                 Theme = theme,
                 Type = type,
                 Priority = priority,
                 Description = description,
-                User = users.Find(u => u.LastName == user || u.FirstName == user),
-                Project = projects.Find(p => p.ProjectName == project)
+                User = repository.users.Find(u => u.LastName == user || u.FirstName == user),
+                Project = repository.projects.Find(p => p.ProjectName == project)
 
             };
 
@@ -152,26 +77,20 @@ namespace CA_BugTracker
             return newproject;
         }
         #endregion
-        
+
         #region Add
 
         public void AddUser()
         {
-            users.Add(CreateUser());
-            Console.WriteLine("Пользователь добавлен");
-            Console.ReadLine();
+            repository.AddUser(CreateUser());
         }
         public void AddTask()
         {
-            tasks.Add(CreateTask());
-            Console.WriteLine("Задача добавлена");
-            Console.ReadLine();
+            repository.AddTask(CreateTask());
         }
         public void AddProject()
         {
-            projects.Add(CreateProject());
-            Console.WriteLine("Проект добавлен");
-            Console.ReadLine();
+            repository.AddProject(CreateProject());
         }
 
         #endregion
@@ -179,66 +98,25 @@ namespace CA_BugTracker
         #region Show
         public void ShowTasks()
         {
-            Console.Clear();
-            Console.WriteLine("ID \tНазвание\tИсполнитель\tПроект   \tТип\tПриоритет\tОписание");
-            foreach (var item in tasks)
-            {//Немного запутался в форматировании
-                Console.WriteLine("{0:d3}\t{1:16}\t{2,-16}{3,-10}{4,10}\t{5,-10}\t{6 ,-5}", item.Id, item.Theme, item.User.LastName
-                                     , item.Project.ProjectName, item.Type, item.Priority, item.Description);
-            }
+            repository.ShowTasks();
         }
         public void ShowTasksInProject()
         {
-            Console.Clear();
-            ShowProjects();
-            Console.WriteLine("Введите название проекта,для которого необходимо отобразить задачи");
-            string projectName = Console.ReadLine();
-            var selected = from t in tasks
-                           where t.Project.ProjectName == projectName
-                           select t;
-            Console.WriteLine("Задачи в проекте : {0}", projectName);
-            foreach (var item in selected)
-            {
-                Console.WriteLine(item.Theme);
-            }
-
+            repository.ShowTasksInProject();
         }
 
-        public  void ShowTaskForUser()
+        public void ShowTaskForUser()
         {
-            Console.Clear();
-            ShowUsers();
-            Console.WriteLine("Введите Фамилию исполнителя");
-            string userName = Console.ReadLine();
-            var select = from t in tasks
-                         where t.User.LastName == userName
-                         select t;
-            Console.WriteLine("Задачи назначенные исполнителю :{0}", userName);
-            foreach (var item in select)
-            {
-                Console.WriteLine("Название : " + item.Theme);
-            }
-
+            repository.ShowTaskForUser();
         }
 
         public void ShowProjects()
         {
-            Console.Clear();
-            Console.WriteLine("ID\tНазвание");
-            foreach (var item in projects)
-            {
-                Console.WriteLine("{0:d3}\t{1:15}", item.Id, item.ProjectName);
-            }
+            repository.ShowProjects();
         }
         public void ShowUsers()
         {
-            Console.Clear();
-            Console.WriteLine("ID\tИмя\tФамилия");
-            foreach (var item in users)
-            {
-                Console.WriteLine("{0:d3}\t{1:16}\t{2,6}", item.Id, item.FirstName, item.LastName);
-            }
-
+            repository.ShowUsers();
         }
         #endregion
 
@@ -246,75 +124,17 @@ namespace CA_BugTracker
 
         public void DeleteTask()
         {
-            ShowTasks();
-            Console.WriteLine("Введите ID задачи , которую следует удалить");
-            int removeTask = Convert.ToInt32(Console.ReadLine());
-            tasks.Remove(tasks.Find(f => f.Id == removeTask));
+            repository.DeleteTask();
 
         }
-
-
         public void DeleteProject()
         {
-            ShowProjects();
-            Console.WriteLine("Введите ID проекта, который следует удалить");
-            try
-            {
-
-                int removeproject = Convert.ToInt32(Console.ReadLine());
-
-                while (tasks.Contains(tasks.Find(p => p.Project.Id == removeproject)))
-                {
-                    Console.WriteLine("Сначала удалите задачи , связанные с этим проектом");
-                    Console.ReadLine();
-                    return;
-
-                }
-                if (!projects.Contains(projects.Find(u => u.Id == Convert.ToInt32(removeproject))))
-                {
-                    Console.WriteLine("Такого проекта не существует");
-                    Console.ReadLine();
-                    return;
-                }
-                projects.Remove(projects.Find(r => r.Id == removeproject));
-            }
-            catch (FormatException)
-            {
-                Console.WriteLine("Ошибка ввода данных .");
-                Console.ReadLine();
-                return;
-            }
-
+            repository.DeleteProject();
         }
 
-        public  void DeleteUser()
+        public void DeleteUser()
         {
-            ShowUsers();
-            Console.WriteLine("Введите ID пользователя, которого следует удалить");
-            try
-            {
-
-                string removeUser = Console.ReadLine();
-                while (tasks.Contains(tasks.Find(p => p.User.Id == Convert.ToInt32(removeUser))))
-                {
-                    Console.WriteLine("Сначала удалите задачи , связанные с этим проектом");
-                    Console.ReadLine();
-                    return;
-                }
-                if (!users.Contains(users.Find(u => u.Id == Convert.ToInt32(removeUser))))
-                {
-                    Console.WriteLine("Такого пользователя не существует");
-                    Console.ReadLine();
-                    return;
-                }
-                users.Remove(users.Find(u => u.Id == Convert.ToInt32(removeUser)));
-            }
-            catch (FormatException)
-            {
-                Console.WriteLine("Ошибка ввода данных .");
-                Console.ReadLine();
-                return;
-            }
+            repository.DeleteUser();
         }
 
 
@@ -322,7 +142,7 @@ namespace CA_BugTracker
 
         #region Save
 
-       public void Savefile()
+        public void Savefile()
         {
 
             string pathtasks = Path.Combine(Environment.CurrentDirectory, "tasks.txt"); ;
@@ -331,7 +151,7 @@ namespace CA_BugTracker
             using (StreamWriter sw = new StreamWriter(pathtasks))
             {
                 sw.WriteLine("ID \tНазвание\tИсполнитель\tПроект   \tТип\tПриоритет\tОписание");
-                foreach (var item in tasks)
+                foreach (var item in repository.tasks)
                 {
                     sw.WriteLine("{0:d3}\t{1:16}\t{2,-16}{3,-10}{4,10}\t{5,-10}\t{6 ,-5}", item.Id, item.Theme, item.User.LastName
                              , item.Project.ProjectName, item.Type, item.Priority, item.Description);
@@ -340,7 +160,7 @@ namespace CA_BugTracker
             using (StreamWriter sw = new StreamWriter(pathprojects))
             {
                 sw.WriteLine("ID\tНазвание");
-                foreach (var item in projects)
+                foreach (var item in repository.projects)
                 {
                     sw.WriteLine("{0:d3}\t{1:15}", item.Id, item.ProjectName);
                 }
@@ -348,7 +168,7 @@ namespace CA_BugTracker
             using (StreamWriter sw = new StreamWriter(pathusers))
             {
                 sw.WriteLine("ID\tИмя\tФамилия");
-                foreach (var item in users)
+                foreach (var item in repository.users)
                 {
                     sw.WriteLine("{0:d3}\t{1:16}\t{2,6}", item.Id, item.FirstName, item.LastName);
                 }

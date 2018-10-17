@@ -10,11 +10,15 @@ namespace CA_BugTracker
     {
         Controller controller = new Controller();
         string command;
-        
-        public void MainMenu()
+        public Menu()
         {
+
             Console.WriteLine("Для навигации введите на клавиатуре соответствующую цифру.\nНажмите любую клавишу для продолжения...");
             Console.ReadLine();
+        }
+
+        public void MainMenu()
+        {
             Console.Clear();
 
 

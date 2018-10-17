@@ -98,25 +98,63 @@ namespace CA_BugTracker
         #region Show
         public void ShowTasks()
         {
-            repository.ShowTasks();
+            Console.Clear();
+            Console.WriteLine("ID \tНазвание\tИсполнитель\tПроект   \tТип\tПриоритет\tОписание");
+            foreach (var item in repository.tasks)
+            {//Немного запутался в форматировании
+                Console.WriteLine("{0:d3}\t{1:16}\t{2,-16}{3,-10}{4,10}\t{5,-10}\t{6 ,-5}", item.Id, item.Theme, item.User.LastName
+                                     , item.Project.ProjectName, item.Type, item.Priority, item.Description);
+            }
         }
         public void ShowTasksInProject()
         {
-            repository.ShowTasksInProject();
+            Console.Clear();
+            ShowProjects();
+            Console.WriteLine("Введите название проекта,для которого необходимо отобразить задачи");
+            string projectName = Console.ReadLine();
+            var selected = from t in repository.tasks
+                           where t.Project.ProjectName == projectName
+                           select t;
+            Console.WriteLine("Задачи в проекте : {0}", projectName);
+            foreach (var item in selected)
+            {
+                Console.WriteLine(item.Theme);
+            }
         }
 
         public void ShowTaskForUser()
         {
-            repository.ShowTaskForUser();
+            Console.Clear();
+            ShowUsers();
+            Console.WriteLine("Введите Фамилию исполнителя");
+            string userName = Console.ReadLine();
+            var select = from t in repository.tasks
+                         where t.User.LastName == userName
+                         select t;
+            Console.WriteLine("Задачи назначенные исполнителю :{0}", userName);
+            foreach (var item in select)
+            {
+                Console.WriteLine("Название : " + item.Theme);
+            }
         }
 
         public void ShowProjects()
         {
-            repository.ShowProjects();
+            Console.Clear();
+            Console.WriteLine("ID\tНазвание");
+            foreach (var item in repository.projects)
+            {
+                Console.WriteLine("{0:d3}\t{1:15}", item.Id, item.ProjectName);
+            }
         }
         public void ShowUsers()
         {
-            repository.ShowUsers();
+            Console.Clear();
+            Console.WriteLine("ID\tИмя\tФамилия");
+            foreach (var item in repository.users)
+            {
+                Console.WriteLine("{0:d3}\t{1:16}\t{2,6}", item.Id, item.FirstName, item.LastName);
+            }
         }
         #endregion
 

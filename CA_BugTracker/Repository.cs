@@ -11,7 +11,7 @@ namespace CA_BugTracker
         public List<Task> tasks;
         public List<User> users;
         public List<Project> projects;
-       
+     
         public Repository()
         {
             projects = new List<Project>
@@ -77,6 +77,7 @@ namespace CA_BugTracker
                     Project=projects[2],
                 }
             };
+            
         }
 
         #region Add
@@ -130,19 +131,9 @@ namespace CA_BugTracker
         }
 
         #endregion
+        //Для работы в Validation
         #region Show
-        public void ShowTasks()
-        {
-            Console.Clear();
-            Console.WriteLine("ID \tНазвание\tИсполнитель\tПроект   \tТип\tПриоритет\tОписание");
-            foreach (var item in tasks)
-            {//Немного запутался в форматировании
-                Console.WriteLine("{0:d3}\t{1:16}\t{2,-16}{3,-10}{4,10}\t{5,-10}\t{6 ,-5}", item.Id, item.Theme, item.User.LastName
-                                     , item.Project.ProjectName, item.Type, item.Priority, item.Description);
-            }
-        }
-
-        public void ShowUsers()
+        void ShowUsers()
         {
             Console.Clear();
             Console.WriteLine("ID\tИмя\tФамилия");
@@ -151,8 +142,7 @@ namespace CA_BugTracker
                 Console.WriteLine("{0:d3}\t{1:16}\t{2,6}", item.Id, item.FirstName, item.LastName);
             }
         }
-
-        public void ShowProjects()
+        void ShowProjects()
         {
             Console.Clear();
             Console.WriteLine("ID\tНазвание");
@@ -161,39 +151,8 @@ namespace CA_BugTracker
                 Console.WriteLine("{0:d3}\t{1:15}", item.Id, item.ProjectName);
             }
         }
-        public void ShowTasksInProject()
-        {
-            Console.Clear();
-            ShowProjects();
-            Console.WriteLine("Введите название проекта,для которого необходимо отобразить задачи");
-            string projectName = Console.ReadLine();
-            var selected = from t in tasks
-                           where t.Project.ProjectName == projectName
-                           select t;
-            Console.WriteLine("Задачи в проекте : {0}", projectName);
-            foreach (var item in selected)
-            {
-                Console.WriteLine(item.Theme);
-            }
-        }
-
-        public void ShowTaskForUser()
-        {
-            Console.Clear();
-            ShowUsers();
-            Console.WriteLine("Введите Фамилию исполнителя");
-            string userName = Console.ReadLine();
-            var select = from t in tasks
-                         where t.User.LastName == userName
-                         select t;
-            Console.WriteLine("Задачи назначенные исполнителю :{0}", userName);
-            foreach (var item in select)
-            {
-                Console.WriteLine("Название : " + item.Theme);
-            }
-
-        }
         #endregion
+
         //Проверки на наличие в списках
         #region Validation
         //Проверка на наличие Пользователя в списке Пользователя(для контроллера)
@@ -218,6 +177,7 @@ namespace CA_BugTracker
             {
                 Console.WriteLine("Нельзя добавить несуществующий проект");
                 Console.ReadLine();
+                
                 ShowProjects();
                 Console.WriteLine("Введите название проекта из списка");
 
@@ -252,7 +212,7 @@ namespace CA_BugTracker
         //Проверка наличия пользователя в списке Пользователи
         public bool IsUserContainList(int removeUser)
         {
-            if (!users.Contains(users.Find(u => u.Id == Convert.ToInt32(removeUser))))
+            if (!users.Contains(FindUserId(removeUser)))
             {
                 Console.WriteLine("Такого пользователя не существует");
                 Console.ReadLine();

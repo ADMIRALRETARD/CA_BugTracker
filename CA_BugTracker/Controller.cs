@@ -9,7 +9,7 @@ namespace CA_BugTracker
 {
     public class Controller
     {
-        
+
         Repository repository;
         public Controller()
         {
@@ -32,10 +32,10 @@ namespace CA_BugTracker
             Console.WriteLine("Введите имя или фамилию исполнителя");
             string user = Console.ReadLine();
             user = repository.IsContainUser(user);
-            
+
             Console.WriteLine("Введите название проекта");
             string project = Console.ReadLine();
-            project= repository.IsContainProject(project);
+            project = repository.IsContainProject(project);
 
             Task newtask = new Task
             {
@@ -124,17 +124,73 @@ namespace CA_BugTracker
 
         public void DeleteTask()
         {
-            repository.DeleteTask();
+            ShowTasks();
+            Console.WriteLine("Введите ID задачи , которую следует удалить");
+            try
+            {
 
+                int removeTask = Convert.ToInt32(Console.ReadLine());
+                if (repository.IsContainTask(removeTask))
+                {
+                    repository.DeleteTask(repository.FindTaskId(removeTask));
+                }
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Ошибка ввода данных .");
+                Console.ReadLine();
+                return;
+            }
         }
         public void DeleteProject()
         {
-            repository.DeleteProject();
+            ShowProjects();
+            Console.WriteLine("Введите ID проекта, который следует удалить");
+            try
+            {
+                int removeproject = Convert.ToInt32(Console.ReadLine());
+
+                if (repository.IsProjectContainInTask(removeproject))
+                {
+                    return;
+                }
+                if (repository.IsProjectContainList(removeproject))
+                {
+                    repository.DeleteProject(repository.FindProjectId(removeproject));
+
+                }
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Ошибка ввода данных .");
+                Console.ReadLine();
+                return;
+            }
         }
 
         public void DeleteUser()
         {
-            repository.DeleteUser();
+            ShowUsers();
+            Console.WriteLine("Введите ID пользователя, которого следует удалить");
+            try
+            {
+                int removeUser = Convert.ToInt32(Console.ReadLine());
+                if (repository.IsContainUserInTask(removeUser))
+                {
+                    return;
+                }
+                if (repository.IsUserContainList(removeUser))
+                {
+                    repository.DeleteUser(repository.FindUserId(removeUser));
+                }
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Ошибка ввода данных .");
+                Console.ReadLine();
+                return;
+            }
+
         }
 
 

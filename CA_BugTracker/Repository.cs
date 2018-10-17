@@ -11,7 +11,7 @@ namespace CA_BugTracker
         public List<Task> tasks;
         public List<User> users;
         public List<Project> projects;
-
+       
         public Repository()
         {
             projects = new List<Project>
@@ -100,74 +100,33 @@ namespace CA_BugTracker
             Console.ReadLine();
         }
         #endregion
+
+
         #region Delete
 
 
-        public void DeleteTask()
+        public void DeleteTask(Task task)
         {
-            ShowTasks();
-            Console.WriteLine("Введите ID задачи , которую следует удалить");
-            int removeTask = Convert.ToInt32(Console.ReadLine());
-            tasks.Remove(FindTaskId(removeTask));
-
+            tasks.Remove(task);
+            Console.WriteLine("Задача удалена");
+            Console.ReadLine();
         }
 
 
-        public void DeleteProject()
+        public void DeleteProject(Project project)
         {
-            ShowProjects();
-            Console.WriteLine("Введите ID проекта, который следует удалить");
-            try
-            {
-                int removeproject = Convert.ToInt32(Console.ReadLine());
-
-                if (IsProjectContainInTask(removeproject))
-                {
-                    return;
-                }
-                if (IsProjectContainList(removeproject))
-                {
-                   
-                    projects.Remove(FindProjectId(removeproject));
-                    Console.WriteLine("Проект удален");
-                    Console.ReadLine();
-                }
-            }
-            catch (FormatException)
-            {
-                Console.WriteLine("Ошибка ввода данных .");
-                Console.ReadLine();
-                return;
-            }
-
+            projects.Remove(project);
+            Console.WriteLine("Проект удален");
+            Console.ReadLine();
+            
         }
 
-        public void DeleteUser()
+        public void DeleteUser(User user)
         {
-            ShowUsers();
-            Console.WriteLine("Введите ID пользователя, которого следует удалить");
-            try
-            {
-                string removeUser = Console.ReadLine();
-                if (IsContainTask(removeUser))
-                {
-                    return;
-                }
-                if (IsUserContainList(removeUser))
-                { 
+            users.Remove(user);
+            Console.WriteLine("Пользователь удален");
+            Console.ReadLine();
 
-                users.Remove(FindUserId(removeUser));
-                Console.WriteLine("Пользователь удален");
-                Console.ReadLine();
-
-                }
-            }
-            catch (FormatException)
-            {
-                Console.WriteLine("Ошибка ввода данных .");
-                Console.ReadLine();
-                return;
-            }
         }
 
         #endregion
@@ -266,12 +225,24 @@ namespace CA_BugTracker
             }
             return project;
         }
-        //Проверка на наличие пользователя в списке Задачи
-        private bool IsContainTask(string removeUser)
+
+       // Проверка на наличие задачи в списке Задачи
+        public bool IsContainTask(int removeTask)
         {
-            while (tasks.Contains(tasks.Find(p => p.User.Id == Convert.ToInt32(removeUser))))
+            while (FindTaskId(removeTask)==null)
             {
-                Console.WriteLine("Сначала удалите задачи , связанные с этим проектом");
+                Console.WriteLine("Такая задача не существует");
+                Console.ReadLine();
+                return false;
+            }
+            return true;
+        }
+        //Проверка на наличие пользователя в списке Задачи
+        public bool IsContainUserInTask(int removeUser)
+        {
+            while (tasks.Contains(tasks.Find(u => u.User.Id == Convert.ToInt32(removeUser))))
+            {
+                Console.WriteLine("Сначала удалите задачи , связанные с этим пользователем");
                 Console.ReadLine();
                 return true;
 
@@ -279,7 +250,7 @@ namespace CA_BugTracker
             return false;
         }
         //Проверка наличия пользователя в списке Пользователи
-        private bool IsUserContainList(string removeUser)
+        public bool IsUserContainList(int removeUser)
         {
             if (!users.Contains(users.Find(u => u.Id == Convert.ToInt32(removeUser))))
             {
@@ -290,7 +261,7 @@ namespace CA_BugTracker
             return true;
         }
         //Проверка на наличие проекта в списке Задачи
-        private bool IsProjectContainInTask(int removeProject)
+        public bool IsProjectContainInTask(int removeProject)
         {
             while (tasks.Contains(tasks.Find(p => p.Project.Id == removeProject)))
             {
@@ -301,9 +272,9 @@ namespace CA_BugTracker
             return false;
         }
         //Проверка на наличие проекта в списке Проекты
-        private bool IsProjectContainList(int removeProject)
+        public bool IsProjectContainList(int removeProject)
         {
-            if (!projects.Contains(projects.Find(u => u.Id == Convert.ToInt32(removeProject))))
+            if (!projects.Contains(FindProjectId(removeProject)))
             {
                 Console.WriteLine("Такого проекта не существует");
                 Console.ReadLine();
@@ -313,15 +284,15 @@ namespace CA_BugTracker
         }
         #endregion
         #region FindObjects
-        User FindUserId(string removeUser)
+        public User FindUserId(int removeUser)
         {
             return users.Find(u => u.Id == Convert.ToInt32(removeUser));
         }
-        Task FindTaskId(int removeTask)
+        public Task FindTaskId(int removeTask)
         {
             return tasks.Find(f => f.Id == removeTask);
         }
-        Project FindProjectId(int removeProject)
+        public Project FindProjectId(int removeProject)
         {
             return projects.Find(r => r.Id == removeProject);
         }

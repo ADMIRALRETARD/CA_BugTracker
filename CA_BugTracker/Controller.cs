@@ -31,12 +31,28 @@ namespace CA_BugTracker
 
             Console.WriteLine("Введите имя или фамилию исполнителя");
             string user = Console.ReadLine();
-            user = repository.IsContainUser(user);
 
+            if (!repository.IsContainUser(user))
+            {
+                Console.WriteLine("Нельзя добавить несуществующего пользователя");
+                Console.ReadLine();
+                ShowUsers();
+                Console.WriteLine("Введите имя пользователя из списка");
+
+                user = Console.ReadLine();
+            }
             Console.WriteLine("Введите название проекта");
             string project = Console.ReadLine();
-            project = repository.IsContainProject(project);
+            if (!repository.IsContainProject(project))
+            {
+                Console.WriteLine("Нельзя добавить несуществующий проект");
+                Console.ReadLine();
 
+                ShowProjects();
+                Console.WriteLine("Введите название проекта из списка");
+
+                project = Console.ReadLine();
+            }
             Task newtask = new Task
             {
                 Theme = theme,
@@ -83,14 +99,20 @@ namespace CA_BugTracker
         public void AddUser()
         {
             repository.AddUser(CreateUser());
+            Console.WriteLine("Пользователь добавлен");
+            Console.ReadLine();
         }
         public void AddTask()
         {
             repository.AddTask(CreateTask());
+            Console.WriteLine("Задача добавлена");
+            Console.ReadLine();
         }
         public void AddProject()
         {
             repository.AddProject(CreateProject());
+            Console.WriteLine("Проект добавлен");
+            Console.ReadLine();
         }
 
         #endregion
@@ -171,6 +193,14 @@ namespace CA_BugTracker
                 if (repository.IsContainTask(removeTask))
                 {
                     repository.DeleteTask(repository.FindTaskId(removeTask));
+                    Console.WriteLine("Задача удалена");
+                    Console.ReadLine();
+                }
+                else
+                {
+                    Console.WriteLine("Такая задача не существует");
+                    Console.ReadLine();
+                    return;
                 }
             }
             catch (FormatException)
@@ -190,12 +220,21 @@ namespace CA_BugTracker
 
                 if (repository.IsProjectContainInTask(removeproject))
                 {
+                    Console.WriteLine("Сначала удалите задачи , связанные с этим проектом");
+                    Console.ReadLine();
                     return;
                 }
                 if (repository.IsProjectContainList(removeproject))
                 {
                     repository.DeleteProject(repository.FindProjectId(removeproject));
-
+                    Console.WriteLine("Проект удален");
+                    Console.ReadLine();
+                }
+                else
+                {
+                    Console.WriteLine("Такого проекта не существует");
+                    Console.ReadLine();
+                    return;
                 }
             }
             catch (FormatException)
@@ -215,11 +254,21 @@ namespace CA_BugTracker
                 int removeUser = Convert.ToInt32(Console.ReadLine());
                 if (repository.IsContainUserInTask(removeUser))
                 {
+                    Console.WriteLine("Сначала удалите задачи , связанные с этим пользователем");
+                    Console.ReadLine();
                     return;
                 }
                 if (repository.IsUserContainList(removeUser))
                 {
                     repository.DeleteUser(repository.FindUserId(removeUser));
+                    Console.WriteLine("Пользователь удален");
+                    Console.ReadLine();
+                }
+                else
+                {
+                    Console.WriteLine("Такого пользователя не существует");
+                    Console.ReadLine();
+                    return;
                 }
             }
             catch (FormatException)

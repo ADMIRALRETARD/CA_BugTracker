@@ -11,7 +11,7 @@ namespace CA_BugTracker
         public List<Task> tasks;
         public List<User> users;
         public List<Project> projects;
-     
+
         public Repository()
         {
             projects = new List<Project>
@@ -77,7 +77,7 @@ namespace CA_BugTracker
                     Project=projects[2],
                 }
             };
-            
+
         }
 
         #region Add
@@ -85,20 +85,14 @@ namespace CA_BugTracker
         public void AddTask(Task task)
         {
             tasks.Add(task);
-            Console.WriteLine("Задача добавлена");
-            Console.ReadLine();
         }
         public void AddProject(Project project)
         {
             projects.Add(project);
-            Console.WriteLine("Проект добавлен");
-            Console.ReadLine();
         }
         public void AddUser(User user)
         {
             users.Add(user);
-            Console.WriteLine("Пользователь добавлен");
-            Console.ReadLine();
         }
         #endregion
 
@@ -109,124 +103,77 @@ namespace CA_BugTracker
         public void DeleteTask(Task task)
         {
             tasks.Remove(task);
-            Console.WriteLine("Задача удалена");
-            Console.ReadLine();
         }
 
 
         public void DeleteProject(Project project)
         {
             projects.Remove(project);
-            Console.WriteLine("Проект удален");
-            Console.ReadLine();
-            
         }
 
         public void DeleteUser(User user)
         {
             users.Remove(user);
-            Console.WriteLine("Пользователь удален");
-            Console.ReadLine();
-
         }
 
         #endregion
-        //Для работы в Validation
-        #region Show
-        void ShowUsers()
-        {
-            Console.Clear();
-            Console.WriteLine("ID\tИмя\tФамилия");
-            foreach (var item in users)
-            {
-                Console.WriteLine("{0:d3}\t{1:16}\t{2,6}", item.Id, item.FirstName, item.LastName);
-            }
-        }
-        void ShowProjects()
-        {
-            Console.Clear();
-            Console.WriteLine("ID\tНазвание");
-            foreach (var item in projects)
-            {
-                Console.WriteLine("{0:d3}\t{1:15}", item.Id, item.ProjectName);
-            }
-        }
-        #endregion
 
-        //Проверки на наличие в списках
+
+        ///Проверки на наличие в списках
         #region Validation
-        //Проверка на наличие Пользователя в списке Пользователя(для контроллера)
-        public string IsContainUser(string user)
+        ///Проверка на наличие Пользователя в списке Пользователя(для контроллера)
+        public bool IsContainUser(string user)
         {
-            while (!users.Contains(users.Find(u => u.FirstName == user || u.LastName == user)))
+            if (users.Contains(users.Find(u => u.FirstName == user || u.LastName == user)))
             {
-                Console.WriteLine("Нельзя добавить несуществующего пользователя");
-                Console.ReadLine();
-                ShowUsers();
-                Console.WriteLine("Введите имя пользователя из списка");
-
-                user = Console.ReadLine();
+                return true;
             }
-            return user;
+            return false;
 
         }
         //Проверка на наличие Проекта в списке Проекты(для контроллера)
-        public string IsContainProject(string project)
+        public bool IsContainProject(string project)
         {
-            while (!projects.Contains(projects.Find(p => p.ProjectName == project)))
+            if (projects.Contains(projects.Find(p => p.ProjectName == project)))
             {
-                Console.WriteLine("Нельзя добавить несуществующий проект");
-                Console.ReadLine();
-                
-                ShowProjects();
-                Console.WriteLine("Введите название проекта из списка");
-
-                project = Console.ReadLine();
+                return true;
             }
-            return project;
+            return false;
+
         }
 
-       // Проверка на наличие задачи в списке Задачи
+        // Проверка на наличие задачи в списке Задачи
         public bool IsContainTask(int removeTask)
         {
-            while (FindTaskId(removeTask)==null)
+            if (FindTaskId(removeTask) != null)
             {
-                Console.WriteLine("Такая задача не существует");
-                Console.ReadLine();
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
         //Проверка на наличие пользователя в списке Задачи
         public bool IsContainUserInTask(int removeUser)
         {
-            while (tasks.Contains(tasks.Find(u => u.User.Id == Convert.ToInt32(removeUser))))
+            if (tasks.Contains(tasks.Find(u => u.User.Id == Convert.ToInt32(removeUser))))
             {
-                Console.WriteLine("Сначала удалите задачи , связанные с этим пользователем");
-                Console.ReadLine();
                 return true;
-
             }
             return false;
         }
         //Проверка наличия пользователя в списке Пользователи
         public bool IsUserContainList(int removeUser)
         {
-            if (!users.Contains(FindUserId(removeUser)))
+            if (users.Contains(FindUserId(removeUser)))
             {
-                Console.WriteLine("Такого пользователя не существует");
-                Console.ReadLine();
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
         //Проверка на наличие проекта в списке Задачи
         public bool IsProjectContainInTask(int removeProject)
         {
-            while (tasks.Contains(tasks.Find(p => p.Project.Id == removeProject)))
+            if (tasks.Contains(tasks.Find(p => p.Project.Id == removeProject)))
             {
-                Console.WriteLine("Сначала удалите задачи , связанные с этим проектом");
-                Console.ReadLine();
                 return true;
             }
             return false;
@@ -234,13 +181,11 @@ namespace CA_BugTracker
         //Проверка на наличие проекта в списке Проекты
         public bool IsProjectContainList(int removeProject)
         {
-            if (!projects.Contains(FindProjectId(removeProject)))
+            if (projects.Contains(FindProjectId(removeProject)))
             {
-                Console.WriteLine("Такого проекта не существует");
-                Console.ReadLine();
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
         #endregion
         #region FindObjects

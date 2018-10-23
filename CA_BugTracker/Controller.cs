@@ -32,7 +32,7 @@ namespace CA_BugTracker
             Console.WriteLine("Введите имя или фамилию исполнителя");
             string user = Console.ReadLine();
 
-            if (!repository.IsContainUser(user))
+            while (!repository.IsContainUser(user))
             {
                 Console.WriteLine("Нельзя добавить несуществующего пользователя");
                 Console.ReadLine();
@@ -43,7 +43,7 @@ namespace CA_BugTracker
             }
             Console.WriteLine("Введите название проекта");
             string project = Console.ReadLine();
-            if (!repository.IsContainProject(project))
+            while (!repository.IsContainProject(project))
             {
                 Console.WriteLine("Нельзя добавить несуществующий проект");
                 Console.ReadLine();
